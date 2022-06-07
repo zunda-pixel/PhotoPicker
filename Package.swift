@@ -21,8 +21,5 @@ let package = Package(
         .target(
             name: "PhotoPicker",
             dependencies: []),
-        .testTarget(
-            name: "PhotoPickerTests",
-            dependencies: ["PhotoPicker"]),
     ]
 )
