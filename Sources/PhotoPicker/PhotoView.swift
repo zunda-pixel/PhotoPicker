@@ -3,12 +3,16 @@ import PhotosUI
 import AVKit
 
 public struct PhotoView: View {
-  let item: NSItemProviderReading
+  private let item: NSItemProviderReading
 
   @State var isPresentedVideoPlayer = false
   @State var didError = false
   @State var error: PhotoError?
   @State var photoData: Any?
+
+  public init(item: NSItemProviderReading) {
+    self.item = item
+  }
 
   func convertData() async throws -> Any? {
     if let movieURL = item as? URL {

@@ -5,7 +5,7 @@ public struct PhotoPicker: UIViewControllerRepresentable {
   @Binding public var results: [PhotoResult]
   @Binding public var didPickPhoto: Bool
 
-  init(results: Binding<[PhotoResult]>, didPickPhoto: Binding<Bool>) {
+  public init(results: Binding<[PhotoResult]>, didPickPhoto: Binding<Bool>) {
     self._results = results
     self._didPickPhoto = didPickPhoto
   }
