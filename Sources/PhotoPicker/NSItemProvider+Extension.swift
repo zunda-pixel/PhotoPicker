@@ -2,7 +2,7 @@ import Foundation
 import PhotosUI
 
 extension NSItemProvider {
-  func loadPhoto() async throws -> NSItemProviderReading {
+  func loadPhoto() async throws -> Any {
     if self.canLoadObject(ofClass: PHLivePhoto.self) {
       return try await self.loadObject(ofClass: PHLivePhoto.self)
     }
@@ -12,11 +12,13 @@ extension NSItemProvider {
     }
 
     else if self.hasItemConformingToTypeIdentifier(UTType.movie.identifier) {
-      let url = try await self.loadFileRepresentation(forTypeIdentifier: UTType.movie.identifier)
-      return url as NSItemProviderReading
+      let moviePath = try await self.loadFileRepresentation(forTypeIdentifier: UTType.movie.identifier)
+      let thumbnail = try await UIImage.thumbnail(videoPath: moviePath)
+      let movie: Movie = .init(path: moviePath, thumbnail: thumbnail)
+      return movie
     }
 
-    fatalError()
+    throw PhotoError.missingData
   }
 
   func loadFileRepresentation(forTypeIdentifier typeIdentifier: String) async throws -> URL {

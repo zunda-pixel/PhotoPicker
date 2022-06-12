@@ -1,22 +1,49 @@
 import SwiftUI
 import PhotosUI
 
-public struct PhotoPicker: UIViewControllerRepresentable {
-  @Binding public var results: [PhotoResult]
-  @Binding public var didPickPhoto: Bool
+struct SamplePhotosPicker: View {
+  @State var results: [PHPickerResult] = []
 
-  public init(results: Binding<[PhotoResult]>, didPickPhoto: Binding<Bool>) {
+  var body: some View {
+    PhotosPicker(results: $results, configuration: .init(photoLibrary: .shared()))
+      .onChange(of: results) { newResults in
+        print(newResults)
+      }
+  }
+}
+
+struct PhotosPicker: View {
+  @State var isPresented = false
+  @Binding var results: [PHPickerResult]
+  let configuration: PHPickerConfiguration
+
+  init(results: Binding<[PHPickerResult]>, configuration: PHPickerConfiguration) {
     self._results = results
-    self._didPickPhoto = didPickPhoto
+    self.configuration = configuration
+  }
+
+  var body: some View {
+    Button {
+      isPresented.toggle()
+    } label: {
+      Text("Hello")
+    }
+    .sheet(isPresented: $isPresented) {
+      PHPickerView(results: $results, configuration: configuration)
+    }
+  }
+}
+
+public struct PHPickerView: UIViewControllerRepresentable {
+  @Binding public var results: [PHPickerResult]
+  var configuration: PHPickerConfiguration
+
+  public init(results: Binding<[PHPickerResult]>, configuration: PHPickerConfiguration) {
+    self._results = results
+    self.configuration = configuration
   }
 
   public func makeUIViewController(context: Context) -> PHPickerViewController {
-    var configuration = PHPickerConfiguration(photoLibrary: .shared())
-    configuration.preselectedAssetIdentifiers = results.map { $0.id }
-    configuration.selectionLimit = 0
-    configuration.preferredAssetRepresentationMode = .current
-    configuration.selection = .ordered
-
     let picker = PHPickerViewController(configuration: configuration)
     picker.delegate = context.coordinator
     return picker
@@ -30,44 +57,18 @@ public struct PhotoPicker: UIViewControllerRepresentable {
   }
 
   public class Coordinator: NSObject, PHPickerViewControllerDelegate, UINavigationControllerDelegate {
-    var parent: PhotoPicker
+    var parent: PHPickerView
 
-    init(_ parent: PhotoPicker) {
+    init(_ parent: PHPickerView) {
       self.parent = parent
     }
 
     private func loadPhotos(results: [PHPickerResult]) async throws {
-      let existingSelection = parent.results
-
-      parent.results = []
-
-      for result in results {
-        let id = result.assetIdentifier!
-        let firstItem = existingSelection.first(where: { $0.id == id })
-
-        var item = firstItem?.item
-
-        if item == nil {
-          item = try await result.itemProvider.loadPhoto()
-        }
-
-        let newResult: PhotoResult = .init(id: id, item: item!)
-
-        parent.results.append(newResult)
-      }
+      self.parent.results = results
     }
 
     public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
       picker.dismiss(animated: true)
-
-      Task {
-        do {
-          try await loadPhotos(results: results)
-          parent.didPickPhoto = true
-        } catch {
-          print(error)
-        }
-      }
     }
   }
 }
