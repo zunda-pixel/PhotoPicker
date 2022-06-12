@@ -9,6 +9,6 @@ import Foundation
 import UIKit
 
 public struct Movie  {
-  let path: URL
-  let thumbnail: UIImage
+  public let path: URL
+  public let thumbnail: UIImage
 }
