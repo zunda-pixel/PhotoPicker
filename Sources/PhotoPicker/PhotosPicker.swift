@@ -7,7 +7,7 @@ public struct PhotosPicker: View {
   @Binding var results: [PHPickerResult]
   let configuration: PHPickerConfiguration
 
-  init(selection: Binding<[PHPickerResult]>,
+  public init(selection: Binding<[PHPickerResult]>,
        maxSelectionCount: Int? = nil,
        selectionBehavior: PHPickerConfiguration.Selection = .default,
        matching filter: PHPickerFilter? = nil,
