@@ -2,7 +2,7 @@ import Foundation
 import PhotosUI
 
 extension NSItemProvider {
-  func loadPhoto() async throws -> Any {
+  public func loadPhoto() async throws -> Any {
     if self.canLoadObject(ofClass: PHLivePhoto.self) {
       return try await self.loadObject(ofClass: PHLivePhoto.self)
     }
@@ -21,7 +21,7 @@ extension NSItemProvider {
     throw PhotoError.missingData
   }
 
-  func loadFileRepresentation(forTypeIdentifier typeIdentifier: String) async throws -> URL {
+  fileprivate func loadFileRepresentation(forTypeIdentifier typeIdentifier: String) async throws -> URL {
     try await withCheckedThrowingContinuation { continuation in
       self.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { url, error in
         if let error = error {
@@ -46,7 +46,7 @@ extension NSItemProvider {
     }
   }
 
-  func loadObject(ofClass aClass : NSItemProviderReading.Type) async throws -> NSItemProviderReading {
+  fileprivate func loadObject(ofClass aClass : NSItemProviderReading.Type) async throws -> NSItemProviderReading {
     try await withCheckedThrowingContinuation { continuation in
       self.loadObject(ofClass: aClass) { data, error in
         if let error = error {
