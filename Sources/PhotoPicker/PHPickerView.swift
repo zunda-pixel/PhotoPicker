@@ -38,11 +38,8 @@ struct PHPickerView: UIViewControllerRepresentable {
       self.parent = parent
     }
 
-    private func loadPhotos(results: [PHPickerResult]) async throws {
-      self.parent.results = results
-    }
-
     public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+      self.parent.results = results
       picker.dismiss(animated: true)
     }
   }
