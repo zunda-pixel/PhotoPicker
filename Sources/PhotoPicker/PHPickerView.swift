@@ -1,42 +1,17 @@
+//
+//  PHPickerView.swift
+//  
+//
+//  Created by zunda on 2022/06/13.
+//
+
+import Foundation
 import SwiftUI
 import PhotosUI
 
-struct SamplePhotosPicker: View {
-  @State var results: [PHPickerResult] = []
-
-  var body: some View {
-    PhotosPicker(results: $results, configuration: .init(photoLibrary: .shared()))
-      .onChange(of: results) { newResults in
-        print(newResults)
-      }
-  }
-}
-
-struct PhotosPicker: View {
-  @State var isPresented = false
-  @Binding var results: [PHPickerResult]
-  let configuration: PHPickerConfiguration
-
-  init(results: Binding<[PHPickerResult]>, configuration: PHPickerConfiguration) {
-    self._results = results
-    self.configuration = configuration
-  }
-
-  var body: some View {
-    Button {
-      isPresented.toggle()
-    } label: {
-      Text("Hello")
-    }
-    .sheet(isPresented: $isPresented) {
-      PHPickerView(results: $results, configuration: configuration)
-    }
-  }
-}
-
-public struct PHPickerView: UIViewControllerRepresentable {
+struct PHPickerView: UIViewControllerRepresentable {
   @Binding public var results: [PHPickerResult]
-  var configuration: PHPickerConfiguration
+  let configuration: PHPickerConfiguration
 
   public init(results: Binding<[PHPickerResult]>, configuration: PHPickerConfiguration) {
     self._results = results

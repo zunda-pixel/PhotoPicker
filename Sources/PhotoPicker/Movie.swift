@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct Movie  {
+public struct Movie  {
   let path: URL
   let thumbnail: UIImage
 }
