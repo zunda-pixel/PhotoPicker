@@ -1,3 +1,7 @@
+## Deprecated
+
+Use [Apple SwiftUI PhotosPicker](https://developer.apple.com/documentation/photokit/photospicker)
+
 # PhotoPicker
 
-A description of this package.
+PHPickerView for SwiftUI
